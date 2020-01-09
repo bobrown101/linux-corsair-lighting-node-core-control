@@ -23,13 +23,13 @@ Neopixels led strips are individual neopixels chained together. Each neopixel ha
 Lets create a theoretical example to explain how to control them.
 Lets assume each neopixel is just one color, and either on or off. 
 
-You have a chain of 4 of these theoretical LEDs "A->B->C->D" and you would like to turn on A and C, but leave B and D off.
-You would "send" them the command "1,0,1,0".
+You have a chain of 4 of these theoretical LEDs `A->B->C->D` and you would like to turn on A and C, but leave B and D off.
+You would `send` them the command `1,0,1,0`.
 
-LED A will receive "1,0,1,0" and take on the value of 1 - meaning on, and then pass on the rest ("0,1,0") to the next LED, LED B. 
-LED B then will receive "0,1,1", take on the value of "0" - meaning off, and pass "1,0" on to LED C.
-LED C will then receive "1,0", take on the value of "1" - meaning on, and pass on "0" to LED D.
-LED D will the receive "0" and take on the value of "0" - meaning off, and then there is nothing to pass on.
+LED A will receive `1,0,1,0` and take on the value of 1 - meaning on, and then pass on the rest (`0,1,0`) to the next LED, LED B. 
+LED B then will receive `0,1,1`, take on the value of `0` - meaning off, and pass `1,0` on to LED C.
+LED C will then receive `1,0`, take on the value of `1` - meaning on, and pass on `0` to LED D.
+LED D will the receive `0` and take on the value of `0` - meaning off, and then there is nothing to pass on.
 
 LED A got 1 meaning turning it on, 
 LED B got 0 turning it off,
@@ -45,7 +45,7 @@ LED C @ 25% brightness,
 and LED D at 0% brightness.
 
 We would follow them same process as before, except instead of sending 1's or 0's we will send an integer between 255 and 0, where 255 is 100% brightness and 0 is 0% brightness.
-So we would send "255, 191, 64, 0" or [255x1, 255x.75, 255x.25, 255x0]
+So we would send ``255, 191, 64, 0`` or `[255x1, 255x.75, 255x.25, 255x0]`
 
 Now great, we can control the brightness of these theoretical LEDS, but they are still only a single color. Well remember, each RGB neopixel is comprised of three separate LEDs, one red, one greeen, and one blue led.
 
@@ -53,11 +53,11 @@ So we will evolve our theoretical example.
 Lets say I want LED A to be brown, LED B to cyan(blue and green combined), LED C to be off, and LED D to be white.
 We are going to send four separate commands:
 1) red values
-"255, 0, 0, 255"
+`255, 0, 0, 255`
 2) green values
-"255, 255, 0, 255"
+`255, 255, 0, 255`
 3) blue values
-"0, 255, 0, 255"
+`0, 255, 0, 255`
 4) set/done
 
 So what we are left with is:
@@ -106,7 +106,7 @@ Here is an example to set all 8 leds in fan1 to 100% on, all red leds in fan2 to
 ```
 
 #### Set/Done command
-After sending commands 1,2,3 or the red green and blue instructions, we send on last simple command that means "commit", or "okay we are done sending instructions, turn the lights on"
+After sending commands 1,2,3 or the red green and blue instructions, we send on last simple command that means `commit`, or `okay we are done sending instructions, turn the lights on`
 This command is 
 ```
 [51,255]
@@ -122,11 +122,11 @@ For example if I only wanted to set the red and green colors, I would do
 
 ## FAQ
 
-### I get  "Error: The module ... was compiled against a different Node.js version using..."
+### I get  `Error: The module ... was compiled against a different Node.js version using...`
 This most likely happened because when you ran `yarn` or `npm i` as not root that uses a different version of node than root.
 This happened to me because I had nvm setup only for my current user, and not all users on the system.
 You can fix this issue many ways, I used this:
 ```
-sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/node" "/usr/local/bin/node"
-sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/npm"
+sudo ln -s `$NVM_DIR/versions/node/$(nvm version)/bin/node` `/usr/local/bin/node`
+sudo ln -s `$NVM_DIR/versions/node/$(nvm version)/bin/npm` `/usr/local/bin/npm`
 ```
