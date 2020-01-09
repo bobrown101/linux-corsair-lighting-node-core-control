@@ -233,6 +233,7 @@ const start = async () => {
 
   setColor(endpoint);
 
+  // TODO - disconnect from device when quit
   // deviceInterface.release(() => {
   //   selectedDevice.rawDevice.close()
   // })

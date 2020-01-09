@@ -1,3 +1,7 @@
+# Control Corsair Lighting Node CORE on linux
+Corsair's iCue software is only available on linux, and doesnt work with wine.
+I reverse engineered the protocol to communicate with the Lighting Node CORE and wrote a script to control it on linux.
+
 ## How to run
 ```
 sudo yarn start
