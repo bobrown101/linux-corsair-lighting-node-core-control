@@ -1,7 +1,7 @@
 {
-  "name": "linux-corsair-lighting-node-core",
+  "name": "linux-corsair-lighting-node-core-control",
   "version": "1.0.0",
-  "description": "Lighting Node Pro controller",
+  "description": "Control Lighting Node Core on linux",
   "main": "index.js",
   "directories": {
     "lib": "lib"
