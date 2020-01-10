@@ -13,8 +13,21 @@ yarn
 sudo yarn start --help
 ```
 
+## How to check for updates
+The following command will automatically check for updates and download them
+```
+yarn update
+```
 
 ## How to run
+The program takes three main arguments
+1) --animation - describes what animation you would like to use. 
+A list of animations can be found with `sudo yarn start --help`
+2) --colors - what colors to use within your animations
+If you are using the SCROLL* animations, the colors will migrate from one fan to the next
+If you are using the CIRCLE* animations, the colors will spin within each fan
+3) --period - how fast you want the animation to be run
+
 For a list of options, run
 ```
 sudo yarn start --help
