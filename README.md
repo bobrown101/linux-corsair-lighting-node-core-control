@@ -2,6 +2,18 @@
 Corsair's iCue software is only available on linux, and doesnt work with wine.
 I reverse engineered the protocol to communicate with the Lighting Node CORE and wrote a script to control it on linux.
 
+## How to install
+Ensure that you have Node.js installed
+
+```
+git clone https://github.com/bobrown101/linux-corsair-lighting-node-core-control.git
+cd linux-corsair-lighting-node-core-control
+npm install -g yarn
+yarn
+sudo yarn start --help
+```
+
+
 ## How to run
 For a list of options, run
 ```
@@ -129,6 +141,9 @@ For example if I only wanted to set the red and green colors, I would do
 ```
 
 ## FAQ
+
+### What colors can I use
+Look in `./colors.ts` for a list of available colors
 
 ### I get  `Error: The module ... was compiled against a different Node.js version using...`
 This most likely happened because when you ran `yarn` or `npm i` as not root that uses a different version of node than root.
