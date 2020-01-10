@@ -3,8 +3,16 @@ Corsair's iCue software is only available on linux, and doesnt work with wine.
 I reverse engineered the protocol to communicate with the Lighting Node CORE and wrote a script to control it on linux.
 
 ## How to run
+For a list of options, run
+```
+sudo yarn start --help
+```
 ```
 sudo yarn start
+```
+or to scroll through white to black,
+```
+sudo yarn start --colors white grey black black grey white --animation SCROLL_REVERSE --period 100
 ```
 
 Let me start off by saying I barely know what Im doing, but stumbled around enough to figure it out.
