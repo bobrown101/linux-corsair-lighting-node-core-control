@@ -197,6 +197,25 @@ const scrollAnimation = async (
   }
 };
 
+const circleAnimation = async (
+  endpoint: OutEndpoint,
+  frames: FanFrame[],
+  period: number,
+  reverse: boolean = false
+) => {
+  console.log("Begin circle animation")
+  let currentFrames = frames;
+
+  while (true) {
+    renderFrames(endpoint, currentFrames);
+    await new Promise(r => setTimeout(r, period));
+    sendPacket(endpoint, [51, 255]);
+    currentFrames = currentFrames.map(frame => {
+      return scrollFrames([frame], reverse)[0]
+    })
+  }
+};
+
 export const start = async (
   frames: FanFrame[],
   animation: ANIMATIONS = ANIMATIONS.STATIC,
@@ -227,6 +246,12 @@ export const start = async (
       break;
     case(ANIMATIONS.SCROLL_REVERSE):
       scrollAnimation(endpoint, frames, period, true);
+      break;
+    case (ANIMATIONS.CIRCLE):
+      circleAnimation(endpoint, frames, period)
+      break;
+    case (ANIMATIONS.CIRCLE_REVERSE):
+      circleAnimation(endpoint, frames, period, true)
       break;
     default:
       console.error("Animation", animation, "not found. Exiting...");

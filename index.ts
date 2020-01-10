@@ -1,7 +1,7 @@
 import * as yargs from "yargs";
 import { start } from "./controller";
 import { ANIMATIONS, ANIMATION_NAMES } from "./animations";
-import { createFrameFromColor } from "./frames";
+import { createFrameFromColor, createFrameFromMultipleColors } from "./frames";
 import {COLORMAP, COLOR_NAMES} from "./colors"
 
 const argv = yargs.options({
@@ -22,8 +22,18 @@ const argv = yargs.options({
   period: { type: "number", default: 50 }
 }).argv;
 
-const frames = argv.colors.map((color) => {
-    return createFrameFromColor(color, argv.brightness)
-})
+let frames = []
+
+if(argv.animation == ANIMATIONS.CIRCLE || argv.animation == ANIMATIONS.CIRCLE_REVERSE){
+    frames = argv.colors.map(() => {
+        return createFrameFromMultipleColors(argv.colors, argv.brightness)
+    })
+}else{
+    frames = argv.colors.map((color) => {
+        return createFrameFromColor(color, argv.brightness)
+    })
+}
+
+console.log(JSON.stringify(frames, null, 4))
 
 start(frames, argv.animation, argv.period);

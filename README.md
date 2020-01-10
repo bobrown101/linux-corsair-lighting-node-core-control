@@ -142,9 +142,6 @@ For example if I only wanted to set the red and green colors, I would do
 
 ## FAQ
 
-### What colors can I use
-Look in `./colors.ts` for a list of available colors
-
 ### I get  `Error: The module ... was compiled against a different Node.js version using...`
 This most likely happened because when you ran `yarn` or `npm i` as not root that uses a different version of node than root.
 This happened to me because I had nvm setup only for my current user, and not all users on the system.
