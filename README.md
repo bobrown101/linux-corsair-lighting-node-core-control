@@ -32,12 +32,17 @@ For a list of options, run
 ```
 sudo yarn start --help
 ```
+To set fans a static red green and blue color
 ```
 sudo yarn start
 ```
 or to scroll through white to black,
 ```
 sudo yarn start --colors white grey black black grey white --animation SCROLL_REVERSE --period 100
+```
+or to set all three fans to a light red
+```
+sudo yarn start --colors red red red --animation STATIC --brightness 10
 ```
 
 Let me start off by saying I barely know what Im doing, but stumbled around enough to figure it out.

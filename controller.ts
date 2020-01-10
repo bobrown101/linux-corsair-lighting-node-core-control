@@ -146,7 +146,7 @@ const connectToDevice = async (
   device: LightingNodeCore
 ): Promise<{ endpoint: OutEndpoint; deviceInterface: Interface }> => {
   const sendPreamble = async (endpoint: OutEndpoint) => {
-    console.log("Sending preamble to device: ", device.deviceID);
+    console.log(device.deviceID, "- initializing ....", );
 
     await sendPacket(endpoint, [0x37]);
     // 0x35 - init
@@ -167,7 +167,7 @@ const connectToDevice = async (
     await sendPacket(endpoint, [0x38, 0x01, 0x01]);
     await sendPacket(endpoint, [0x33, 0xff]);
   };
-  console.log("Connecting to device: ", device.deviceID);
+  console.log(device.deviceID, "- connecting ....");
 
   device.rawDevice.open();
   const deviceInterface = device.rawDevice.interfaces[0];
@@ -186,7 +186,6 @@ const scrollAnimation = async (
   period: number,
   reverse: boolean = false
 ) => {
-  console.log("Begin scroll animation")
   let currentFrames = frames;
 
   while (true) {
@@ -203,7 +202,6 @@ const circleAnimation = async (
   period: number,
   reverse: boolean = false
 ) => {
-  console.log("Begin circle animation")
   let currentFrames = frames;
 
   while (true) {
@@ -216,12 +214,24 @@ const circleAnimation = async (
   }
 };
 
+const staticAnimation = async (
+  endpoint: OutEndpoint,
+  frames: FanFrame[]
+) => {
+  let currentFrames = frames;
+
+  while (true) {
+    renderFrames(endpoint, currentFrames);
+    await new Promise(r => setTimeout(r, 300));
+    sendPacket(endpoint, [51, 255]);
+  }
+};
+
 export const start = async (
   frames: FanFrame[],
   animation: ANIMATIONS = ANIMATIONS.STATIC,
   period: number
 ) => {
-  console.log("Sarting");
   const devicelist = await getDevices();
 
   const corsairLights = devicelist.filter(device => {
@@ -240,6 +250,7 @@ export const start = async (
 
   switch (animation) {
     case(ANIMATIONS.STATIC):
+      staticAnimation(endpoint, frames)
       break;
     case(ANIMATIONS.SCROLL):
       scrollAnimation(endpoint, frames, period);
