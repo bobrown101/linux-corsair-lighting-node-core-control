@@ -1,7 +1,12 @@
 import * as yargs from "yargs";
 import { start } from "./controller";
 import { ANIMATIONS, ANIMATION_NAMES } from "./animations";
-import { createFrameFromColor, createFrameFromMultipleColors } from "./frames";
+import {
+  createFrameFromColorname,
+  createFrameFromMultipleColors,
+  createLEDColorFromColorName,
+  createPulseFrameArrayFromColor
+} from "./frames";
 import { COLORMAP, COLOR_NAMES } from "./colors";
 
 const argv = yargs
@@ -24,6 +29,15 @@ const argv = yargs
   })
   .wrap(null).argv;
 
+const customArgValidation = (args) => {
+  if(args.period < 10){
+    console.error("ERROR - setting your period to below 10 overwhelms your device to the point it no longer accepts any more commands.")
+    console.error("Please re-run this command with a higher period.")
+    console.error("Exiting...")
+    process.exit(1)
+  }
+}
+
 let frames = [];
 
 if (
@@ -36,10 +50,15 @@ if (
       argv.brightness
     );
   });
+} else if (argv.animation == ANIMATIONS.PULSE) {
+  const colorname = argv.colors[0] || COLORMAP.white;
+  const ledColor = createLEDColorFromColorName(colorname as COLORMAP);
+
+  frames = createPulseFrameArrayFromColor(ledColor);
 } else {
   frames = argv.colors.map(color => {
-    return createFrameFromColor(color as COLORMAP, argv.brightness);
+    return createFrameFromColorname(color as COLORMAP, argv.brightness);
   });
 }
-
+customArgValidation(argv)
 start(frames, argv.animation, argv.period);

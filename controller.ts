@@ -1,5 +1,5 @@
 import { getDeviceList, Device, Interface, OutEndpoint, on } from "usb";
-import { EightLEDColor, FanFrame, LEDColor } from "./frames";
+import { SP120Fan, FanFrame, LEDColor } from "./frames";
 import { ANIMATIONS } from "./animations";
 import * as _ from "lodash";
 
@@ -111,7 +111,7 @@ const scrollFrames = (frames: FanFrame[], reverse: boolean = false) => {
 
   const cycledRawFrames = _.chunk(cycledLEDColors, 8);
   return cycledRawFrames.map(
-    (frame: EightLEDColor): FanFrame => {
+    (frame: SP120Fan): FanFrame => {
       return {
         ledColors: frame
       };
@@ -251,6 +251,9 @@ export const start = async (
   switch (animation) {
     case(ANIMATIONS.STATIC):
       staticAnimation(endpoint, frames)
+      break;
+    case(ANIMATIONS.PULSE):
+      scrollAnimation(endpoint, frames, period)
       break;
     case(ANIMATIONS.SCROLL):
       scrollAnimation(endpoint, frames, period);
