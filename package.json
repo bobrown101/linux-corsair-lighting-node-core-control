@@ -7,15 +7,18 @@
     "lib": "lib"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.149",
     "@types/usb": "^1.5.1",
+    "@types/yargs": "^15.0.0",
     "command-line-args": "^5.1.1",
-    "rgb-color": "^2.1.2",
+    "lodash": "^4.17.15",
     "typescript": "^3.7.4",
-    "usb": "^1.3.3"
+    "usb": "^1.3.3",
+    "yargs": "^15.1.0"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "ts-node newController.ts"
+    "start": "ts-node index.ts"
   },
   "keywords": [],
   "author": "",
