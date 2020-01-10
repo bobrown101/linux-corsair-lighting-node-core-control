@@ -1,4 +1,4 @@
-import { COLORMAP } from "../colors";
+import { COLORMAP } from "../../colors";
 import * as _ from "lodash";
 export interface LEDColor {
   red: number;
@@ -42,9 +42,7 @@ export const createLEDColorFromCSVRGB = (csvRGB: string) => {
   return createLEDColor(redGreenBlue[0], redGreenBlue[1], redGreenBlue[2]);
 };
 
-export const createLEDColorFromColorName = (
-  colorName: COLORMAP
-): LEDColor => {
+export const createLEDColorFromColorName = (colorName: COLORMAP): LEDColor => {
   const csvRgbCodeForColor = COLORMAP[colorName];
   return createLEDColorFromCSVRGB(csvRgbCodeForColor);
 };
@@ -87,10 +85,7 @@ export const createFrameFromMultipleColors = (
   numLEDS = 8
 ): FanFrame => {
   const rgbCodesForColors: LEDColor[] = colors.map(colorName =>
-    adjustLEDColorBrightness(
-      createLEDColorFromColorName(colorName),
-      brightness
-    )
+    adjustLEDColorBrightness(createLEDColorFromColorName(colorName), brightness)
   );
 
   //if it averages out to less than 1 led per color, just pick the first 8 colors
@@ -152,8 +147,8 @@ export const createFrameFromLEDColor = (color: LEDColor): FanFrame => {
 export const createPulseFrameArrayFromColor = (color: LEDColor): FanFrame[] => {
   let frames = [];
   for (let brightness = 0; brightness < 10; brightness++) {
-    let adjustedColor = adjustLEDColorBrightness(color, brightness*10);
+    let adjustedColor = adjustLEDColorBrightness(color, brightness * 10);
     frames = [...frames, createFrameFromLEDColor(adjustedColor)];
   }
-  return [...frames, ...frames.slice().reverse()]
+  return [...frames, ...frames.slice().reverse()];
 };
