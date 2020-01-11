@@ -3,7 +3,8 @@ import {
   FanFrame,
   adjustLEDColorBrightness,
   createFrameFromLEDColor,
-  createLEDColorFromColorName
+  createLEDColorFromColorName,
+  createFrameWithColorForEachFan
 } from "./frames";
 import { RenderMethod, SetMethod } from "../controller";
 import { ANIMATION_INFORMATION } from ".";
@@ -22,17 +23,7 @@ export const pulseAnimation = async (
   const colorname = animationInformation.colors[0] || COLORMAP.white;
   const ledColor = createLEDColorFromColorName(colorname as COLORMAP);
 
-  const createFrameWithColorForEachFan = (
-    color: LEDColor,
-    numFans: number
-  ): FanFrame[] => {
-    const frame = createFrameFromLEDColor(color);
-    let frames: FanFrame[] = [];
-    for (let x = 0; x < numFans; x++) {
-      frames = [...frames, frame];
-    }
-    return frames;
-  };
+
 
   let currentBrightnessMultiplier = 100;
   let countDown = true;

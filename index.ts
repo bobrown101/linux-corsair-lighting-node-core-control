@@ -8,7 +8,7 @@ import {
 
 import { COLORMAP, COLOR_NAMES } from "./colors";
 
-const MIN_PERIOD = 5
+const MIN_PERIOD = 0
 
 const argv = yargs
   .options({

@@ -35,6 +35,18 @@ export const createLEDColor = (
   };
 };
 
+export const copyLEDColor = (color: LEDColor): LEDColor =>{
+  return createLEDColor(color.red, color.green, color.blue)
+}
+
+export const ledColorsEqual = (color1: LEDColor, color2: LEDColor) => {
+  return (
+    color1.red == color2.red &&
+    color1.green == color2.green &&
+    color1.blue == color2.blue
+  );
+};
+
 export const createLEDColorFromCSVRGB = (csvRGB: string) => {
   let redGreenBlue = csvRGB
     .split(",")
@@ -90,8 +102,10 @@ export const createFrameFromMultipleColors = (
 
   //if it averages out to less than 1 led per color, just pick the first 8 colors
   if (rgbCodesForColors.length > numLEDSPerFan) {
-    console.warn("You have supplied more colors than can fit on one fan.")
-    console.warn("Reducing the number of colors by selecting the ones that come first")
+    console.warn("You have supplied more colors than can fit on one fan.");
+    console.warn(
+      "Reducing the number of colors by selecting the ones that come first"
+    );
     return { ledColors: rgbCodesForColors.slice(0, 8) as SP120Fan };
   } else {
     //  figure out how many leds each color gets
@@ -146,3 +160,14 @@ export const createFrameFromLEDColor = (color: LEDColor): FanFrame => {
   };
 };
 
+export const createFrameWithColorForEachFan = (
+  color: LEDColor,
+  numFans: number
+): FanFrame[] => {
+  const frame = createFrameFromLEDColor(color);
+  let frames: FanFrame[] = [];
+  for (let x = 0; x < numFans; x++) {
+    frames = [...frames, frame];
+  }
+  return frames;
+};

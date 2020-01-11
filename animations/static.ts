@@ -15,7 +15,7 @@ export const staticAnimation = async (
     while (true) {
       await renderMethod(currentFrames);
       await new Promise(r => setTimeout(r, animationInformation.period));
-      setMethod();
+      await setMethod();
     }
   };
   
