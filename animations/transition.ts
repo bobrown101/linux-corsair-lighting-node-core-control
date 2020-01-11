@@ -6,7 +6,10 @@ import {
   ledColorsEqual,
   copyLEDColor
 } from "./frames";
+import * as _ from "lodash"
 
+
+export const MULTIPLIER = 5;
 export const transitionAnimation = async (
   renderMethod: RenderMethod,
   setMethod: SetMethod,
@@ -38,21 +41,76 @@ export const transitionAnimation = async (
       await new Promise(r => setTimeout(r, animationInformation.period));
       setMethod();
 
-      if (currentColor.red !== targetColor.red) {
-        currentColor.red > targetColor.red
-          ? (currentColor.red = currentColor.red - 1)
-          : (currentColor.red = currentColor.red + 1);
+
+      if(currentColor.red  == targetColor.red){
+        //reds are equal, do nothing
+      }else{
+        // if current red is less than target red
+        if(currentColor.red < targetColor.red){
+          // if current red plus multiplier is less than or equal to target red
+          if(currentColor.red + MULTIPLIER <= targetColor.red){
+            currentColor.red = currentColor.red + MULTIPLIER
+          // if current red plus multiplirer is not less than or equal to target red
+          }else{
+            currentColor.red = currentColor.red + 1
+          }
+        }else{
+          // if current red plus multiplier is more than target red
+          if(currentColor.red + MULTIPLIER > targetColor.red){
+            currentColor.red = currentColor.red - MULTIPLIER
+          }else{
+            currentColor.red = currentColor.red - 1
+          }
+        }
       }
-      if (currentColor.green !== targetColor.green) {
-        currentColor.green > targetColor.green
-          ? (currentColor.green = currentColor.green - 1)
-          : (currentColor.green = currentColor.green + 1);
+
+
+      if(currentColor.green  == targetColor.green){
+        //reds are equal, do nothing
+      }else{
+        // if current red is less than target red
+        if(currentColor.green < targetColor.green){
+          // if current red plus multiplier is less than or equal to target red
+          if(currentColor.green + MULTIPLIER <= targetColor.green){
+            currentColor.green = currentColor.green + MULTIPLIER
+          // if current red plus multiplirer is not less than or equal to target red
+          }else{
+            currentColor.green = currentColor.green + 1
+          }
+        }else{
+          // if current red plus multiplier is more than target red
+          if(currentColor.green + MULTIPLIER > targetColor.green){
+            currentColor.green = currentColor.green - MULTIPLIER
+          }else{
+            currentColor.green = currentColor.green - 1
+          }
+        }
       }
-      if (currentColor.blue !== targetColor.blue) {
-        currentColor.blue > targetColor.blue
-          ? (currentColor.blue = currentColor.blue - 1)
-          : (currentColor.blue = currentColor.blue + 1);
+
+
+      if(currentColor.blue  == targetColor.blue){
+        //reds are equal, do nothing
+      }else{
+        // if current red is less than target red
+        if(currentColor.blue < targetColor.blue){
+          // if current red plus multiplier is less than or equal to target red
+          if(currentColor.blue + MULTIPLIER <= targetColor.blue){
+            currentColor.blue = currentColor.blue + MULTIPLIER
+          // if current red plus multiplirer is not less than or equal to target red
+          }else{
+            currentColor.blue = currentColor.blue + 1
+          }
+        }else{
+          // if current red plus multiplier is more than target red
+          if(currentColor.blue + MULTIPLIER > targetColor.blue){
+            currentColor.blue = currentColor.blue - MULTIPLIER
+          }else{
+            currentColor.blue = currentColor.blue - 1
+          }
+        }
       }
+
+
     }
 
     targetColorIndex = increaseIndex(targetColorIndex);
