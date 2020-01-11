@@ -91,7 +91,11 @@ const createSetMethod = (endpoint: OutEndpoint): SetMethod => {
   };
 };
 
-const createRenderMethod = (endpoint: OutEndpoint): RenderMethod => {
+const createRenderMethod = (
+  endpoint: OutEndpoint,
+  numFans: number,
+  numLedsPerFan: number
+): RenderMethod => {
   return async (fanFrames: FanFrame[]) => {
     let RED_CODE = 0;
     let GREEN_CODE = 1;
@@ -110,9 +114,16 @@ const createRenderMethod = (endpoint: OutEndpoint): RenderMethod => {
       });
     });
 
-    await sendPacket(endpoint, redCommand);
-    await sendPacket(endpoint, greenCommand);
-    await sendPacket(endpoint, blueCommand);
+    // Lets say we have a frame that looked like this
+    // 50,0,0,50,0,0,0,0,0,0,0,0,0,51,51,51,51,51,51,51,51,102,102,102,102,102,102,102,102,153,153,153,153,153,...
+    // Obviously its longer than numFans*numLedsPerFan
+    // The controller only reads the information it needs and ignores the rest, but if it gets long enough,
+    // the controler will hang up and not respond unless you reboot. I theorize its a buffer overflow somehwere
+    // So to get around this we will trim the array to the length we need.
+    const sliceIndex = numFans * numLedsPerFan + beginArr.length + 1;
+    await sendPacket(endpoint, redCommand.slice(0, sliceIndex));
+    await sendPacket(endpoint, greenCommand.slice(0, sliceIndex));
+    await sendPacket(endpoint, blueCommand.slice(0, sliceIndex));
   };
 };
 
@@ -171,7 +182,11 @@ export const start = async (animationInformation: ANIMATION_INFORMATION) => {
 
   const { endpoint, deviceInterface } = await connectToDevice(selectedDevice);
 
-  const renderMethod = createRenderMethod(endpoint);
+  const renderMethod = createRenderMethod(
+    endpoint,
+    animationInformation.numberFans,
+    animationInformation.ledsPerFan
+  );
   const setMethod = createSetMethod(endpoint);
 
   runAnimation(animationInformation, renderMethod, setMethod);

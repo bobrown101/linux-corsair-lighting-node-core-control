@@ -2,13 +2,15 @@ import COLORMAP from "../colors";
 import { FanFrame } from "./frames";
 import {
   createFrameFromColorname,
-  createFrameFromMultipleColors,
   createLEDColorFromColorName,
-  createPulseFrameArrayFromColor
 } from "./frames";
 import { RenderMethod, SetMethod } from "../controller";
 import { LEDColor, SP120Fan } from "./frames";
 import * as _ from "lodash";
+import { staticAnimation } from "./static";
+import { scrollAnimation } from "./scroll";
+import { circleAnimation } from "./circle";
+import { pulseAnimation } from "./pulse";
 
 export enum ANIMATIONS {
   STATIC = "STATIC",
@@ -16,7 +18,8 @@ export enum ANIMATIONS {
   SCROLL_REVERSE = "SCROLL_REVERSE",
   CIRCLE = "CIRCLE",
   CIRCLE_REVERSE = "CIRCLE_REVERSE",
-  PULSE = "PULSE"
+  PULSE = "PULSE",
+  CONSECUTIVE = "CONSECUTIVE"
 }
 
 export type FramesAndInfo = {
@@ -30,168 +33,104 @@ export type ANIMATION_INFORMATION = {
   brightness: number;
   period: number;
   reverse?: boolean;
+  ledsPerFan: number;
+  numberFans: number;
 };
 
 export const ANIMATION_NAMES = Object.keys(ANIMATIONS);
 
-const scrollFrames = (frames: FanFrame[], reverse: boolean = false) => {
-  const allLEDColors: LEDColor[] = frames.reduce(
-    (accumulator, currentFrame) => {
-      return accumulator.concat(currentFrame.ledColors);
-    },
-    []
-  );
 
-  let cycledLEDColors: LEDColor[] = [];
-  if (reverse) {
-    cycledLEDColors = allLEDColors.map((value, index) => {
-      if (index == allLEDColors.length - 1) {
-        return allLEDColors[0];
-      } else {
-        return allLEDColors[index + 1];
-      }
-    });
-  } else {
-    cycledLEDColors = allLEDColors.map((value, index) => {
-      if (index == 0) {
-        return allLEDColors[allLEDColors.length - 1];
-      } else {
-        return allLEDColors[index - 1];
-      }
-    });
-  }
 
-  const cycledRawFrames = _.chunk(cycledLEDColors, 8);
-  return cycledRawFrames.map(
-    (frame: SP120Fan): FanFrame => {
-      return {
-        ledColors: frame
-      };
+
+const consecutiveAnimation = async (
+  renderMethod: RenderMethod,
+  setMethod: SetMethod,
+  animationInformation: ANIMATION_INFORMATION
+) => {
+  let colorOffset = 0;
+
+  const generateFramesForConsecutiveAnimation = color => {
+    let frames = [];
+    for (let i = 0; i < animationInformation.numberFans; i++) {
+      frames = [
+        ...frames,
+        createFrameFromColorname(
+          color,
+          animationInformation.brightness,
+          animationInformation.ledsPerFan
+        )
+      ];
     }
-  );
-};
-
-const scrollAnimation = async (
-  renderMethod: RenderMethod,
-  setMethod: SetMethod,
-  framesAndInfo: FramesAndInfo
-) => {
-  let currentFrames = framesAndInfo.frames;
+    return frames;
+  };
 
   while (true) {
-    await renderMethod(currentFrames);
-    await new Promise(r =>
-      setTimeout(r, framesAndInfo.animationInformation.period)
+    const frames = generateFramesForConsecutiveAnimation(
+      animationInformation.colors[colorOffset]
     );
+    await renderMethod(frames);
+    await new Promise(r => setTimeout(r, animationInformation.period));
     await setMethod();
-    currentFrames = scrollFrames(
-      currentFrames,
-      framesAndInfo.animationInformation.reverse
-    );
+
+    if (colorOffset == animationInformation.colors.length - 1) {
+      colorOffset = 0;
+    } else {
+      colorOffset = colorOffset + 1;
+    }
   }
 };
 
-const circleAnimation = async (
-  renderMethod: RenderMethod,
-  setMethod: SetMethod,
-  framesAndInfo: FramesAndInfo
-) => {
-  let currentFrames = framesAndInfo.frames;
 
-  while (true) {
-    await renderMethod(currentFrames);
-    await new Promise(r =>
-      setTimeout(r, framesAndInfo.animationInformation.period)
-    );
-    await setMethod();
-    currentFrames = currentFrames.map(frame => {
-      return scrollFrames(
-        [frame],
-        framesAndInfo.animationInformation.reverse
-      )[0];
-    });
-  }
-};
+// export const generateFramesFromAnimation = (
+//   animation: ANIMATIONS,
+//   colors: COLORMAP[],
+//   brightness: number
+// ): FanFrame[] => {
+//   let frames = [];
 
-const staticAnimation = async (
-  renderMethod: RenderMethod,
-  setMethod: SetMethod,
-  framesAndInfo: FramesAndInfo
-) => {
-  let currentFrames = framesAndInfo.frames;
+//   if (animation == ANIMATIONS.PULSE) {
+//     const colorname = colors[0] || COLORMAP.white;
+//     const ledColor = createLEDColorFromColorName(colorname as COLORMAP);
 
-  while (true) {
-    await renderMethod(currentFrames);
-    await new Promise(r => setTimeout(r, 300));
-    setMethod();
-  }
-};
-
-export const generateFramesFromAnimation = (
-  animation: ANIMATIONS,
-  colors: COLORMAP[],
-  brightness: number
-): FanFrame[] => {
-  let frames = [];
-
-  if (
-    animation == ANIMATIONS.CIRCLE ||
-    animation == ANIMATIONS.CIRCLE_REVERSE
-  ) {
-    frames = colors.map(() => {
-      return createFrameFromMultipleColors(colors as COLORMAP[], brightness);
-    });
-  } else if (animation == ANIMATIONS.PULSE) {
-    const colorname = colors[0] || COLORMAP.white;
-    const ledColor = createLEDColorFromColorName(colorname as COLORMAP);
-
-    frames = createPulseFrameArrayFromColor(ledColor);
-  } else {
-    frames = colors.map(color => {
-      return createFrameFromColorname(color as COLORMAP, brightness);
-    });
-  }
-  return frames;
-};
+//     frames = createPulseFrameArrayFromColor(ledColor);
+//   } else {
+//     frames = colors.map(color => {
+//       return createFrameFromColorname(color as COLORMAP, brightness);
+//     });
+//   }
+//   return frames;
+// };
 
 export const runAnimation = async (
   animationInformation: ANIMATION_INFORMATION,
   renderMethod: RenderMethod,
   setMethod: SetMethod
 ) => {
-  const { animationName, colors, brightness, period } = animationInformation;
-  const frames = generateFramesFromAnimation(
-    animationName,
-    colors as COLORMAP[],
-    brightness
-  );
 
-  let framesAndInfo: FramesAndInfo = {
-    animationInformation,
-    frames
-  };
-
-  switch (animationName) {
+  switch (animationInformation.animationName) {
     case ANIMATIONS.STATIC:
-      staticAnimation(renderMethod, setMethod, framesAndInfo);
+      staticAnimation(renderMethod, setMethod, animationInformation);
       break;
     case ANIMATIONS.PULSE:
-      scrollAnimation(renderMethod, setMethod, framesAndInfo);
+      pulseAnimation(renderMethod, setMethod, animationInformation);
       break;
     case ANIMATIONS.SCROLL:
-      scrollAnimation(renderMethod, setMethod, framesAndInfo);
+      scrollAnimation(renderMethod, setMethod, animationInformation);
       break;
     case ANIMATIONS.SCROLL_REVERSE:
-      framesAndInfo.animationInformation.reverse = true;
-      scrollAnimation(renderMethod, setMethod, framesAndInfo);
+      animationInformation.reverse = true;
+      scrollAnimation(renderMethod, setMethod, animationInformation);
       break;
     case ANIMATIONS.CIRCLE:
-      circleAnimation(renderMethod, setMethod, framesAndInfo);
+      circleAnimation(renderMethod, setMethod, animationInformation);
       break;
     case ANIMATIONS.CIRCLE_REVERSE:
-      framesAndInfo.animationInformation.reverse = true;
-      circleAnimation(renderMethod, setMethod, framesAndInfo);
+      animationInformation.reverse = true;
+      circleAnimation(renderMethod, setMethod, animationInformation);
       break;
+    // case ANIMATIONS.CONSECUTIVE:
+    //   consecutiveAnimation(renderMethod, setMethod, animationInformation);
+    //   break;
     default:
       console.error(
         "Animation",

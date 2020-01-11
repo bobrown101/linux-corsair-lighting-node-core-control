@@ -82,20 +82,22 @@ export const adjustLEDColorHue = (ledColor: LEDColor, hueColor: LEDColor) => {
 export const createFrameFromMultipleColors = (
   colors: COLORMAP[],
   brightness,
-  numLEDS = 8
+  numLEDSPerFan = 8
 ): FanFrame => {
   const rgbCodesForColors: LEDColor[] = colors.map(colorName =>
     adjustLEDColorBrightness(createLEDColorFromColorName(colorName), brightness)
   );
 
   //if it averages out to less than 1 led per color, just pick the first 8 colors
-  if (rgbCodesForColors.length >= numLEDS) {
+  if (rgbCodesForColors.length > numLEDSPerFan) {
+    console.warn("You have supplied more colors than can fit on one fan.")
+    console.warn("Reducing the number of colors by selecting the ones that come first")
     return { ledColors: rgbCodesForColors.slice(0, 8) as SP120Fan };
   } else {
     //  figure out how many leds each color gets
-    const numPerColor = Math.floor(numLEDS / rgbCodesForColors.length);
+    const numPerColor = Math.floor(numLEDSPerFan / rgbCodesForColors.length);
     // and figure out how many leds cant be evenly spread out
-    const numLeftover = numLEDS - rgbCodesForColors.length * numPerColor;
+    const numLeftover = numLEDSPerFan - rgbCodesForColors.length * numPerColor;
 
     let ledColors = [];
     rgbCodesForColors.forEach(rgbCode => {
@@ -144,11 +146,3 @@ export const createFrameFromLEDColor = (color: LEDColor): FanFrame => {
   };
 };
 
-export const createPulseFrameArrayFromColor = (color: LEDColor): FanFrame[] => {
-  let frames = [];
-  for (let brightness = 0; brightness < 10; brightness++) {
-    let adjustedColor = adjustLEDColorBrightness(color, brightness * 10);
-    frames = [...frames, createFrameFromLEDColor(adjustedColor)];
-  }
-  return [...frames, ...frames.slice().reverse()];
-};

@@ -3,11 +3,12 @@ import { start } from "./controller";
 import {
   ANIMATIONS,
   ANIMATION_NAMES,
-  generateFramesFromAnimation,
   ANIMATION_INFORMATION
 } from "./animations";
 
 import { COLORMAP, COLOR_NAMES } from "./colors";
+
+const MIN_PERIOD = 5
 
 const argv = yargs
   .options({
@@ -30,9 +31,9 @@ const argv = yargs
   .wrap(null).argv;
 
 const customArgValidation = args => {
-  if (args.period < 10) {
+  if (args.period < MIN_PERIOD) {
     console.error(
-      "ERROR - setting your period to below 10 overwhelms your device to the point it no longer accepts any more commands."
+      `ERROR - setting your period to below ${MIN_PERIOD} overwhelms your device to the point it no longer accepts any more commands.`
     );
     console.error("Please re-run this command with a higher period.");
     console.error("Exiting...");
@@ -44,7 +45,9 @@ const animationInformation: ANIMATION_INFORMATION = {
   animationName: argv.animation,
   colors: argv.colors as COLORMAP[],
   brightness: argv.brightness,
-  period: argv.period
+  period: argv.period,
+  ledsPerFan: argv.ledsPerFan,
+  numberFans: argv.numberFans
 };
 
 customArgValidation(argv);
