@@ -2,7 +2,6 @@ import { RenderMethod, SetMethod } from "../controller";
 import { ANIMATION_INFORMATION } from ".";
 import COLORMAP from "../colors";
 import {
-  SP120Fan,
   FanFrame,
   LEDColor,
   createFrameFromColorname
@@ -10,9 +9,10 @@ import {
 import * as _ from "lodash";
 
 export const scrollFrames = (frames: FanFrame[], reverse: boolean = false) => {
+  const ledsPerFan = frames[0].ledsPerFan
   const allLEDColors: LEDColor[] = frames.reduce(
     (accumulator, currentFrame) => {
-      return accumulator.concat(currentFrame.ledColors);
+      return accumulator.concat(currentFrame.colors);
     },
     []
   );
@@ -36,11 +36,12 @@ export const scrollFrames = (frames: FanFrame[], reverse: boolean = false) => {
     });
   }
 
-  const cycledRawFrames = _.chunk(cycledLEDColors, 8);
+  const cycledRawFrames = _.chunk(cycledLEDColors, ledsPerFan);
   return cycledRawFrames.map(
-    (frame: SP120Fan): FanFrame => {
+    (frame: FanFrame): FanFrame => {
       return {
-        ledColors: frame
+        ledsPerFan,
+        colors: frame
       };
     }
   );
@@ -54,7 +55,8 @@ export const scrollAnimation = async (
   let currentFrames = animationInformation.colors.map(color => {
     return createFrameFromColorname(
       color as COLORMAP,
-      animationInformation.brightness
+      animationInformation.brightness,
+      animationInformation.ledsPerFan
     );
   });
 

@@ -6,21 +6,9 @@ export interface LEDColor {
   blue: number;
 }
 
-export type EightLEDColor = [
-  LEDColor,
-  LEDColor,
-  LEDColor,
-  LEDColor,
-  LEDColor,
-  LEDColor,
-  LEDColor,
-  LEDColor
-];
-
-export type SP120Fan = EightLEDColor;
-
 export interface FanFrame {
-  ledColors: SP120Fan;
+  ledsPerFan: number
+  colors: LEDColor[]
 }
 
 export const createLEDColor = (
@@ -94,19 +82,22 @@ export const adjustLEDColorHue = (ledColor: LEDColor, hueColor: LEDColor) => {
 export const createFrameFromMultipleColors = (
   colors: COLORMAP[],
   brightness,
-  numLEDSPerFan = 8
+  numLEDSPerFan
 ): FanFrame => {
   const rgbCodesForColors: LEDColor[] = colors.map(colorName =>
     adjustLEDColorBrightness(createLEDColorFromColorName(colorName), brightness)
   );
 
-  //if it averages out to less than 1 led per color, just pick the first 8 colors
+  //if it averages out to less than 1 led per color, just pick the first ones that can fit
   if (rgbCodesForColors.length > numLEDSPerFan) {
     console.warn("You have supplied more colors than can fit on one fan.");
     console.warn(
       "Reducing the number of colors by selecting the ones that come first"
     );
-    return { ledColors: rgbCodesForColors.slice(0, 8) as SP120Fan };
+    return {
+      colors: rgbCodesForColors.slice(0, numLEDSPerFan),
+      ledsPerFan: numLEDSPerFan
+    }
   } else {
     //  figure out how many leds each color gets
     const numPerColor = Math.floor(numLEDSPerFan / rgbCodesForColors.length);
@@ -126,45 +117,41 @@ export const createFrameFromMultipleColors = (
     }
 
     return {
-      ledColors: ledColors as SP120Fan
-    };
+      colors: ledColors,
+      ledsPerFan: numLEDSPerFan
+    }
   }
 };
 
 export const createFrameFromColorname = (
   color: COLORMAP,
   brightness,
-  numLEDS = 8
+  numLEDSPerFan
 ): FanFrame => {
   const ledColor = adjustLEDColorBrightness(
     createLEDColorFromColorName(color),
     brightness
   );
-  return createFrameFromLEDColor(ledColor);
+  return createFrameFromLEDColor(ledColor, numLEDSPerFan);
 };
 
-export const createFrameFromLEDColor = (color: LEDColor): FanFrame => {
-  // I cant figure out how to get typescript to handle this properly. Just doing it dirty for now
-  const ledColors: SP120Fan = [
-    color,
-    color,
-    color,
-    color,
-    color,
-    color,
-    color,
-    color
-  ];
+export const createFrameFromLEDColor = (color: LEDColor, ledsPerFan: number): FanFrame => {
+  const colors = []
+  for (let index = 0; index < ledsPerFan; index++) {
+    colors.push(color)
+  }
   return {
-    ledColors
+    colors,
+    ledsPerFan
   };
 };
 
 export const createFrameWithColorForEachFan = (
   color: LEDColor,
+  numLEDSPerFan: number,
   numFans: number
 ): FanFrame[] => {
-  const frame = createFrameFromLEDColor(color);
+  const frame = createFrameFromLEDColor(color, numLEDSPerFan);
   let frames: FanFrame[] = [];
   for (let x = 0; x < numFans; x++) {
     frames = [...frames, frame];

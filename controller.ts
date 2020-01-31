@@ -107,7 +107,7 @@ const createRenderMethod = (
     let blueCommand = beginArr.concat([BLUE_CODE]);
 
     fanFrames.forEach(fanFrame => {
-      fanFrame.ledColors.forEach(ledColor => {
+      fanFrame.colors.forEach(ledColor => {
         redCommand = redCommand.concat([ledColor.red]);
         greenCommand = greenCommand.concat([ledColor.green]);
         blueCommand = blueCommand.concat([ledColor.blue]);

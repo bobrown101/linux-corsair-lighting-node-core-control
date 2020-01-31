@@ -9,7 +9,7 @@ export const staticAnimation = async (
     animationInformation: ANIMATION_INFORMATION
   ) => {
     let currentFrames = animationInformation.colors.map(color => {
-      return createFrameFromColorname(color as COLORMAP, animationInformation.brightness);
+      return createFrameFromColorname(color as COLORMAP, animationInformation.brightness, animationInformation.ledsPerFan);
     });
   
     while (true) {

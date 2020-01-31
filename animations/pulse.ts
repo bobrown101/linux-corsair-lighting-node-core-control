@@ -35,7 +35,8 @@ export const pulseAnimation = async (
 
     let frames = createFrameWithColorForEachFan(
       color,
-      animationInformation.numberFans
+      animationInformation.numberFans,
+      animationInformation.ledsPerFan
     );
 
     await renderMethod(frames);

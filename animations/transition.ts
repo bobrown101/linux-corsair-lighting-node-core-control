@@ -35,7 +35,8 @@ export const transitionAnimation = async (
     while (!ledColorsEqual(currentColor, targetColor)) {
       const frames = createFrameWithColorForEachFan(
         currentColor,
-        animationInformation.numberFans
+        animationInformation.numberFans,
+        animationInformation.ledsPerFan
       );
       await renderMethod(frames);
       await new Promise(r => setTimeout(r, animationInformation.period));
