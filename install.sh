@@ -9,7 +9,7 @@ fi
 sudo git clone https://github.com/bobrown101/linux-corsair-lighting-node-core-control.git /etc/linux-corsair-lighting-node-core-control 
 
 cd /etc/linux-corsair-lighting-node-core-control
-
+npm install -g yarn
 yarn
 
 sudo echo "#!/bin/bash
