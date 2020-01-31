@@ -1,5 +1,5 @@
 # Control Corsair Lighting Node CORE on linux
-Corsair's iCue software is only available on linux, and doesnt work with wine.
+Corsair's iCue software is only available on windows, and doesnt work with wine.
 I reverse engineered the protocol to communicate with the Lighting Node CORE and wrote a script to control it on linux.
 
 ## How to install
@@ -64,23 +64,23 @@ Lets assume each neopixel is just one color, and either on or off.
 You have a chain of 4 of these theoretical LEDs `A->B->C->D` and you would like to turn on A and C, but leave B and D off.
 You would `send` them the command `1,0,1,0`.
 
-LED A will receive `1,0,1,0` and take on the value of 1 - meaning on, and then pass on the rest (`0,1,0`) to the next LED, LED B. 
-LED B then will receive `0,1,1`, take on the value of `0` - meaning off, and pass `1,0` on to LED C.
-LED C will then receive `1,0`, take on the value of `1` - meaning on, and pass on `0` to LED D.
-LED D will the receive `0` and take on the value of `0` - meaning off, and then there is nothing to pass on.
+- LED A will receive `1,0,1,0` and take on the value of 1 - meaning on, and then pass on the rest (`0,1,0`) to the next LED, LED B. 
+- LED B then will receive `0,1,1`, take on the value of `0` - meaning off, and pass `1,0` on to LED C.
+- LED C will then receive `1,0`, take on the value of `1` - meaning on, and pass on `0` to LED D.
+- LED D will the receive `0` and take on the value of `0` - meaning off, and then there is nothing to pass on.
 
-LED A got 1 meaning turning it on, 
-LED B got 0 turning it off,
-LED C got 1 turning it on,
-LED D got 0 turning it off
+- LED A got 1 meaning turning it on, 
+- LED B got 0 turning it off,
+- LED C got 1 turning it on,
+- LED D got 0 turning it off
 
 Now lets say rather than just turning them on or off, you would like to control how bright they are.
 
-Lets say we would like to have 
-LED A @ 100% brightness, 
-LED B @ 75% brightness, 
-LED C @ 25% brightness,
-and LED D at 0% brightness.
+- Lets say we would like to have 
+- LED A @ 100% brightness, 
+- LED B @ 75% brightness, 
+- LED C @ 25% brightness,
+- and LED D at 0% brightness.
 
 We would follow them same process as before, except instead of sending 1's or 0's we will send an integer between 255 and 0, where 255 is 100% brightness and 0 is 0% brightness.
 So we would send ``255, 191, 64, 0`` or `[255x1, 255x.75, 255x.25, 255x0]`
