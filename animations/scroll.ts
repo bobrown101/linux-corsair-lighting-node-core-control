@@ -8,6 +8,11 @@ import {
 } from "./frames";
 import * as _ from "lodash";
 
+/**
+ * Takes in an array of FanFrames and returns an array of FanFrames of the same length but with the colors offset by one led
+ * @param frames FanFrame[]
+ * @param reverse boolean
+ */
 export const scrollFrames = (frames: FanFrame[], reverse: boolean = false) => {
   const ledsPerFan = frames[0].ledsPerFan
   const allLEDColors: LEDColor[] = frames.reduce(
@@ -38,7 +43,7 @@ export const scrollFrames = (frames: FanFrame[], reverse: boolean = false) => {
 
   const cycledRawFrames = _.chunk(cycledLEDColors, ledsPerFan);
   return cycledRawFrames.map(
-    (frame: FanFrame): FanFrame => {
+    (frame: LEDColor[]): FanFrame => {
       return {
         ledsPerFan,
         colors: frame

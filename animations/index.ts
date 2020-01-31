@@ -3,8 +3,8 @@ import { FanFrame } from "./frames";
 import { RenderMethod, SetMethod } from "../controller";
 import * as _ from "lodash";
 import { staticAnimation } from "./static";
-// import { scrollAnimation } from "./scroll";
-// import { circleAnimation } from "./circle";
+import { scrollAnimation } from "./scroll";
+import { circleAnimation } from "./circle";
 import { pulseAnimation } from "./pulse";
 import { transitionAnimation } from "./transition";
 
@@ -47,20 +47,20 @@ export const runAnimation = async (
     case ANIMATIONS.PULSE:
       pulseAnimation(renderMethod, setMethod, animationInformation);
       break;
-    // case ANIMATIONS.SCROLL:
-    //   scrollAnimation(renderMethod, setMethod, animationInformation);
-    //   break;
-    // case ANIMATIONS.SCROLL_REVERSE:
-    //   animationInformation.reverse = true;
-    //   scrollAnimation(renderMethod, setMethod, animationInformation);
-    //   break;
-    // case ANIMATIONS.CIRCLE:
-    //   circleAnimation(renderMethod, setMethod, animationInformation);
-    //   break;
-    // case ANIMATIONS.CIRCLE_REVERSE:
-    //   animationInformation.reverse = true;
-    //   circleAnimation(renderMethod, setMethod, animationInformation);
-    //   break;
+    case ANIMATIONS.SCROLL:
+      scrollAnimation(renderMethod, setMethod, animationInformation);
+      break;
+    case ANIMATIONS.SCROLL_REVERSE:
+      animationInformation.reverse = true;
+      scrollAnimation(renderMethod, setMethod, animationInformation);
+      break;
+    case ANIMATIONS.CIRCLE:
+      circleAnimation(renderMethod, setMethod, animationInformation);
+      break;
+    case ANIMATIONS.CIRCLE_REVERSE:
+      animationInformation.reverse = true;
+      circleAnimation(renderMethod, setMethod, animationInformation);
+      break;
     case ANIMATIONS.TRANSITION:
       transitionAnimation(renderMethod, setMethod, animationInformation);
       break;
