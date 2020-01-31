@@ -4,20 +4,18 @@ I reverse engineered the protocol to communicate with the Lighting Node CORE and
 
 ## How to install
 Ensure that you have Node.js installed
-
 ```
-git clone https://github.com/bobrown101/linux-corsair-lighting-node-core-control.git
-cd linux-corsair-lighting-node-core-control
-npm install -g yarn
-yarn
-sudo yarn start --help
+sudo chmod +x install.sh
+./insall.sh
+```
+
+## How to uninstall
+```
+sudo ./uninstall.sh
 ```
 
 ## How to check for updates
-The following command will automatically check for updates and download them
-```
-yarn update
-```
+The install script will automatically pull any new updates when the systemd service is started
 
 ## How to run
 The program takes three main arguments

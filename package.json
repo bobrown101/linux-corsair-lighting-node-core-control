@@ -19,7 +19,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "ts-node index.ts",
-    "update": "git pull"
+    "update": "echo \"Pulling for updates...\"git pull"
   },
   "keywords": [],
   "author": "",
