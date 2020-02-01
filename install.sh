@@ -5,6 +5,7 @@ if [[ $UID != 0 ]]; then
     echo "sudo $0 $*"
     exit 1
 fi
+sudo rm -rf /etc/linux-corsair-lighting-node-core-control
 
 sudo git clone https://github.com/bobrown101/linux-corsair-lighting-node-core-control.git /etc/linux-corsair-lighting-node-core-control 
 
