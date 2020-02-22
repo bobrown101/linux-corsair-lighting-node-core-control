@@ -64,7 +64,7 @@ const getDevices = async (): Promise<LightingNodeCore[]> => {
 };
 
 const sendPacket = (endpoint: OutEndpoint, byteArray: number[]) => {
-  // console.log("Sending Packet: " + byteArray);
+  console.log("Sending Packet: " + byteArray);
 
   const make64 = (arr: number[]) => {
     while (arr.length < 64) {
