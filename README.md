@@ -6,7 +6,7 @@ I reverse engineered the protocol to communicate with the Lighting Node CORE and
 Ensure that you have Node.js installed
 ```
 sudo chmod +x install.sh
-./insall.sh
+sudo ./install.sh
 ```
 
 ## How to uninstall
